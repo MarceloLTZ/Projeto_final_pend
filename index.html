@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel ENEM Pro | Central do Assistente de Coordenação</title>
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts (Inter + Roboto) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --enem-blue: #003366;
+            --enem-blue-light: #004080;
+            --enem-yellow: #ffc107;
+            --enem-yellow-dark: #d39e00;
+            --enem-gradient: linear-gradient(135deg, #002244 0%, #004080 100%);
+            --transition-speed: 0.3s;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+            padding-top: 76px; /* Offset para a navbar fixa */
+        }
+
+        /* Estilização da Navbar */
+        .navbar-enem {
+            background-color: var(--enem-blue);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar-brand-badge {
+            background-color: var(--enem-yellow);
+            color: #000;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: var(--enem-gradient);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            padding: 90px 0 80px 0;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 193, 7, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform var(--transition-speed);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Dark Mode Adjustments */
+        [data-bs-theme="dark"] {
+            --enem-blue: #0b192c;
+            --enem-gradient: linear-gradient(135deg, #050c17 0%, #1e3e62 100%);
+        }
+
+        [data-bs-theme="dark"] .bg-light-custom {
+            background-color: #121824 !important;
+        }
+
+        /* Cards e Hover Effects */
+        .custom-card {
+            border: none;
+            border-radius: 14px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .custom-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        }
+
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+        }
+
+        .icon-box-blue {
+            background-color: rgba(0, 51, 102, 0.1);
+            color: var(--enem-blue);
+        }
+
+        .icon-box-yellow {
+            background-color: rgba(255, 193, 7, 0.15);
+            color: var(--enem-yellow-dark);
+        }
+
+        /* Checklist Custom */
+        .checklist-item {
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .checklist-item.completed {
+            border-left-color: #198754;
+            background-color: rgba(25, 135, 84, 0.05);
+        }
+
+        .checklist-item.completed label {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        /* Badges de emergência */
+        .badge-emergency {
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #001f3f;
+            color: #d1d5db;
+        }
+
+        footer a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: var(--enem-yellow);
+        }
+
+        /* Botão Flutuante de Atalho */
+        .floating-action-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 999;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================
+         NAVBAR RESPONSIVA FIXA
+    =========================================== -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-enem fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center font-weight-bold" href="#hero">
+                <i class="bi bi-shield-check text-warning fs-3 me-2"></i>
+                <span class="fw-bold tracking-tight">ENEM<span class="text-warning">Pro</span></span>
+                <span class="navbar-brand-badge">COORDENAÇÃO</span>
+            </a>
+            
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Alternar navegação">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-1">
+                    <li class="nav-item"><a class="nav-link px-3" href="#hero">Início</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#atribuicoes">Atribuições</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#recursos">Recursos Operacionais</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#checklist">Checklist Diário</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#calculadora">Calculadora</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#protocolos">Protocolos</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#contato">Ocorrências</a></li>
+                    
+                    <!-- Botão de Alternar Modo Claro/Escuro -->
+                    <li class="nav-item ms-lg-2">
+                        <button class="btn btn-outline-warning btn-sm rounded-circle p-2 d-flex align-items-center justify-content-center" id="themeToggle" style="width: 38px; height: 38px;" title="Alternar Modo Claro/Escuro">
+                            <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==========================================
+         HERO SECTION (BANNER PRINCIPAL)
+    =========================================== -->
+    <section id="hero" class="hero-section d-flex align-items-center">
+        <div class="container">
+            <div class="row align-items-center gy-5">
+                <div class="col-lg-7">
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-warning text-dark fw-semibold mb-3 fs-7">
+                        <i class="bi bi-broadcast"></i> Edição ENEM 2026 • Operação de Aplicação
+                    </div>
+                    <h1 class="display-4 fw-extrabold mb-3">Central de Gestão do Assistente de Coordenação</h1>
+                    <p class="lead mb-4 text-light opacity-90">
+                        Ferramenta integrada de suporte tático, controle de logística de prova, gestão de aplicadores e atendimento rápido a ocorrências no local de aplicação.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="#checklist" class="btn btn-warning btn-lg fw-bold px-4 shadow-sm">
+                            <i class="bi bi-card-checklist me-2"></i> Abrir Checklist Diário
+                        </a>
+                        <a href="#protocolos" class="btn btn-outline-light btn-lg px-4">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> Emergências
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Cards com Indicadores Rápidos -->
+                <div class="col-lg-5">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="stat-card text-center">
+                                <i class="bi bi-door-open fs-1 text-warning mb-2"></i>
+                                <h2 class="fw-bold mb-0 counter" data-target="30">0</h2>
+                                <span class="small text-light opacity-75">Salas sob Supervisão</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-card text-center">
+                                <i class="bi bi-people fs-1 text-warning mb-2"></i>
+                                <h2 class="fw-bold mb-0 counter" data-target="64">0</h2>
+                                <span class="small text-light opacity-75">Fiscais & Aplicadores</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-card text-center">
+                                <i class="bi bi-person-bounding-box fs-1 text-warning mb-2"></i>
+                                <h2 class="fw-bold mb-0 counter" data-target="900">0</h2>
+                                <span class="small text-light opacity-75">Candidatos Previstos</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-card text-center">
+                                <i class="bi bi-clock-history fs-1 text-warning mb-2"></i>
+                                <h2 class="fw-bold mb-0">13:00</h2>
+                                <span class="small text-light opacity-75">Fechamento de Portões</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SOBRE / ATRIBUIÇÕES DO ASSISTENTE
+    =========================================== -->
+    <section id="atribuicoes" class="py-5 bg-body-tertiary">
+        <div class="container py-4">
+            <div class="text-center max-w-700 mx-auto mb-5">
+                <span class="text-primary fw-bold text-uppercase tracking-wider small">Papel Tático</span>
+                <h2 class="fw-bold display-6">Atribuições do Assistente de Coordenador</h2>
+                <p class="text-muted">O Assistente de Coordenador é o pilar operacional da escola, garantindo a aplicação segura, rigorosa e padronizada das diretrizes do INEP.</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 custom-card p-4">
+                        <div class="icon-box icon-box-blue">
+                            <i class="bi bi-box-seam-fill"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Logística de Malotes</h4>
+                        <p class="text-muted mb-0">Recebimento, conferência de lacres, guarda temporária em sala de segurança e distribuição cronometrada aos chefes de sala.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card h-100 custom-card p-4">
+                        <div class="icon-box icon-box-yellow">
+                            <i class="bi bi-person-badge-fill"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Gestão da Equipe</h4>
+                        <p class="text-muted mb-0">Treinamento presencial prévio, checagem de presença de fiscais, alocação de substitutos (reservas) e ronda contínua nos corredores.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card h-100 custom-card p-4">
+                        <div class="icon-box icon-box-blue">
+                            <i class="bi bi-journal-check"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Atas e Ocorrências</h4>
+                        <p class="text-muted mb-0">Registro meticuloso de eliminações, atendimento a candidatos com necessidades especiais e apoio na redação do Relatório Final do Local.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         RECURSOS OPERACIONAIS (ACCORDION BOOTSTRAP)
+    =========================================== -->
+    <section id="recursos" class="py-5">
+        <div class="container py-4">
+            <div class="row align-items-center gy-4">
+                <div class="col-lg-5">
+                    <span class="text-primary fw-bold text-uppercase tracking-wider small">Instruções Oficiais</span>
+                    <h2 class="fw-bold display-6 mb-3">Guia Rápido de Diretrizes Oficiais</h2>
+                    <p class="text-muted mb-4">
+                        Consulte rapidamente as regras essenciais para o fluxo sem interrupções durante o dia de prova.
+                    </p>
+                    <div class="p-4 rounded-3 bg-primary text-white shadow-sm">
+                        <h5 class="fw-bold mb-2"><i class="bi bi-info-circle-fill me-2"></i> Lembrete Crucial</h5>
+                        <p class="mb-0 small opacity-90">
+                            Qualquer eliminação de participante por porte de aparelho eletrônico emite um alerta imediato na ata de sala e deve ter o aparelho lacrado no envelope porta-objetos.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-lg-7">
+                    <!-- Bootstrap Accordion Native -->
+                    <div class="accordion custom-accordion shadow-sm" id="accordionDiretrizes">
+                        
+                        <div class="accordion-item border-0 mb-3 rounded-3 shadow-sm overflow-hidden">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    <i class="bi bi-door-open-fill text-primary me-2"></i> Horários e Abertura de Portões
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionDiretrizes">
+                                <div class="accordion-body text-muted">
+                                    <ul>
+                                        <li><strong>12:00:</strong> Abertura oficial dos portões.</li>
+                                        <li><strong>13:00:</strong> Fechamento pontual e impreterível dos portões.</li>
+                                        <li><strong>13:00 às 13:30:</strong> Procedimentos de segurança e identificação.</li>
+                                        <li><strong>13:30:</strong> Autorização para início das provas em todas as salas.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item border-0 mb-3 rounded-3 shadow-sm overflow-hidden">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    <i class="bi bi-person-vcard-fill text-primary me-2"></i> Documentação Permitida e Identificação
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionDiretrizes">
+                                <div class="accordion-body text-muted">
+                                    <p>São aceitos documentos oficiais com foto (RG, CNH, Passaporte, CTPS, DNI) e documentos digitais oficiais (e-Título, CNH Digital, RG Digital) via aplicativo oficial. Cópias não autenticadas e prints de tela <strong>não</strong> são aceitos.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item border-0 rounded-3 shadow-sm overflow-hidden">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    <i class="bi bi-bandaid-fill text-primary me-2"></i> Atendimento Especializado e Saleta de Apoio
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionDiretrizes">
+                                <div class="accordion-body text-muted">
+                                    <p>Lactantes dispõem de sala reservada com acompanhante responsável pelo bebê. Candidatos com mobilidade reduzida devem ser acomodados no térreo com acessibilidade garantida.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         RECURSO JS 1: CHECKLIST DIÁRIO DA OPERAÇÃO
+    =========================================== -->
+    <section id="checklist" class="py-5 bg-body-tertiary">
+        <div class="container py-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+                <div>
+                    <span class="text-primary fw-bold text-uppercase tracking-wider small">Ferramenta Interativa 1</span>
+                    <h2 class="fw-bold display-6 mb-1">Checklist de Operação Diária</h2>
+                    <p class="text-muted mb-0">Acompanhe o progresso da rotina do dia de aplicação. Progresso salvo automaticamente.</p>
+                </div>
+                
+                <div class="mt-3 mt-md-0 d-flex gap-2">
+                    <button class="btn btn-outline-secondary btn-sm" id="btnFilterAll">Todos</button>
+                    <button class="btn btn-outline-primary btn-sm" id="btnFilterPending">Pendentes</button>
+                    <button class="btn btn-outline-success btn-sm" id="btnFilterDone">Concluídos</button>
+                    <button class="btn btn-danger btn-sm" id="btnResetChecklist" title="Resetar checklist"><i class="bi bi-arrow-counterclockwise"></i></button>
+                </div>
+            </div>
+
+            <!-- Barra de Progresso Dinâmica -->
+            <div class="card custom-card mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold">Status do Cumprimento do Cronograma</span>
+                        <span class="fw-bold text-primary" id="progressPercentage">0%</span>
+                    </div>
+                    <div class="progress" style="height: 12px;">
+                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" id="checklistProgressBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Itens do Checklist -->
+            <div class="row g-3" id="checklistContainer">
+                <!-- Inserido dinamicamente via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         RECURSO JS 2: CALCULADORA LOGÍSTICA DE RECURSOS
+    =========================================== -->
+    <section id="calculadora" class="py-5">
+        <div class="container py-4">
+            <div class="row align-items-center gy-4">
+                <div class="col-lg-6">
+                    <span class="text-primary fw-bold text-uppercase tracking-wider small">Ferramenta Interativa 2</span>
+                    <h2 class="fw-bold display-6 mb-3">Calculadora Logística do Local</h2>
+                    <p class="text-muted mb-4">
+                        Dimensione instantaneamente a quantidade de insumos (água, copos, canetas sobressalentes) e a equipe de apoio com base no número total de salas sob sua responsabilidade.
+                    </p>
+
+                    <form id="calcForm" class="card custom-card p-4">
+                        <div class="mb-3">
+                            <label for="inputSalas" class="form-label fw-semibold">Número de Salas Ativas na Escola</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-door-open"></i></span>
+                                <input type="number" class="form-control" id="inputSalas" min="1" max="100" value="20" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="inputMediaAlunos" class="form-label fw-semibold">Média de Candidatos por Sala</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-people"></i></span>
+                                <input type="number" class="form-control" id="inputMediaAlunos" min="10" max="60" value="30" required>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary fw-bold w-full py-2" id="btnCalcular">
+                            <i class="bi bi-calculator me-2"></i> Calcular Necessidades Logísticas
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Resultados da Calculadora -->
+                <div class="col-lg-6">
+                    <div class="card custom-card bg-primary text-white p-4">
+                        <h4 class="fw-bold mb-4 border-bottom border-light pb-2"><i class="bi bi-clipboard-data me-2"></i> Estimativa de Recursos Exigidos</h4>
+
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="p-3 bg-white bg-opacity-10 rounded-3">
+                                    <span class="d-block text-warning small text-uppercase fw-bold">Garrafas de Água (500ml)</span>
+                                    <span class="fs-3 fw-bold" id="resAgua">--</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="p-3 bg-white bg-opacity-10 rounded-3">
+                                    <span class="d-block text-warning small text-uppercase fw-bold">Fiscais de Corredor/Reserva</span>
+                                    <span class="fs-3 fw-bold" id="resFiscais">--</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="p-3 bg-white bg-opacity-10 rounded-3">
+                                    <span class="d-block text-warning small text-uppercase fw-bold">Kits de Envelopes Porta-Objetos</span>
+                                    <span class="fs-3 fw-bold" id="resEnvelopes">--</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="p-3 bg-white bg-opacity-10 rounded-3">
+                                    <span class="d-block text-warning small text-uppercase fw-bold">Canetas Pretas Reservas</span>
+                                    <span class="fs-3 fw-bold" id="resCanetas">--</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-black bg-opacity-20 rounded-3 small">
+                            <i class="bi bi-shield-check me-1"></i> Estimativas baseadas nas diretrizes recomendadas de contingência operacional do INEP.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         RECURSO JS 3: MODAIS DE PROTOCOLOS DE EMERGÊNCIA
+    =========================================== -->
+    <section id="protocolos" class="py-5 bg-body-tertiary">
+        <div class="container py-4">
+            <div class="text-center max-w-700 mx-auto mb-5">
+                <span class="text-danger fw-bold text-uppercase tracking-wider small">Ação Rápida</span>
+                <h2 class="fw-bold display-6">Protocolos de Contingência & Emergências</h2>
+                <p class="text-muted">Clique nos cartões abaixo para visualizar os passos obrigatórios recomendados pelo manual de aplicação.</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Protocolo 1 -->
+                <div class="col-md-4">
+                    <div class="card custom-card h-100 p-4 border-top border-4 border-danger">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-1">Critico</span>
+                            <i class="bi bi-lightning-charge-fill fs-3 text-danger"></i>
+                        </div>
+                        <h4 class="fw-bold">Queda de Energia Elétrica</h4>
+                        <p class="text-muted small">Passos para garantir a continuidade da prova e notificação do consórcio.</p>
+                        <button class="btn btn-outline-danger mt-auto fw-semibold" data-bs-toggle="modal" data-bs-target="#modalEnergia">
+                            Abrir Protocolo <i class="bi bi-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Protocolo 2 -->
+                <div class="col-md-4">
+                    <div class="card custom-card h-100 p-4 border-top border-4 border-warning">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-3 py-1">Médio</span>
+                            <i class="bi bi-heart-pulse-fill fs-3 text-warning"></i>
+                        </div>
+                        <h4 class="fw-bold">Candidato Passando Mal</h4>
+                        <p class="text-muted small">Procedimento de encaminhamento à equipe médica sem comprometer o tempo de prova.</p>
+                        <button class="btn btn-outline-warning text-dark mt-auto fw-semibold" data-bs-toggle="modal" data-bs-target="#modalSaude">
+                            Abrir Protocolo <i class="bi bi-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Protocolo 3 -->
+                <div class="col-md-4">
+                    <div class="card custom-card h-100 p-4 border-top border-4 border-primary">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1">Segurança</span>
+                            <i class="bi bi-shield-lock-fill fs-3 text-primary"></i>
+                        </div>
+                        <h4 class="fw-bold">Suspeita de Fraude / Eletrônico</h4>
+                        <p class="text-muted small">Rito de eliminação, apreensão de dispositivo e acionamento da Polícia Federal.</p>
+                        <button class="btn btn-outline-primary mt-auto fw-semibold" data-bs-toggle="modal" data-bs-target="#modalFraude">
+                            Abrir Protocolo <i class="bi bi-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         MODAIS BOOTSTRAP (PROTOCOLOS)
+    =========================================== -->
+    <!-- Modal Energia -->
+    <div class="modal fade" id="modalEnergia" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-header-title fw-bold mb-0"><i class="bi bi-lightning-charge me-2"></i> Protocolo: Queda de Energia</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ol class="lh-lg">
+                        <li>Instrua os fiscais a manterem os candidatos sentados e em silêncio.</li>
+                        <li>Verifique se a queda afeta apenas o bloco ou toda a região/bairro.</li>
+                        <li>Caso haja perda de luminosidade comprometendo a leitura, comunique imediatamente a Coordenação Regional.</li>
+                        <li>Registre exatamente o horário de interrupção e restabelecimento na Ata de Sala para eventual compensação de tempo autorizada.</li>
+                    </ol>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Entendido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Saúde -->
+    <div class="modal fade" id="modalSaude" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-header-title fw-bold mb-0"><i class="bi bi-heart-pulse me-2"></i> Protocolo: Atendimento Médico</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ol class="lh-lg">
+                        <li>O participante deve ser acompanhado por um fiscal reserva até a sala de atendimento médico/enfermagem.</li>
+                        <li>O caderno de provas e cartão-resposta <strong>devem permanecer sob guarda do Chefe de Sala</strong>.</li>
+                        <li>Se o candidato não retornar, registre a desistência/eliminação por motivo de saúde na Ata da Sala.</li>
+                    </ol>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Fraude -->
+    <div class="modal fade" id="modalFraude" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-header-title fw-bold mb-0"><i class="bi bi-shield-lock me-2"></i> Protocolo: Violação / Aparelho Sonoro</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ol class="lh-lg">
+                        <li>Se qualquer aparelho emitir som (mesmo desligado ou dentro do envelope), o participante deve ser <strong>eliminado sumariamente</strong>.</li>
+                        <li>Solicite que o candidato acompanhe o assistente à sala da coordenação de forma discreta.</li>
+                        <li>Preencha o Termo de Eliminação com testemunhas e recolha todo o material de prova.</li>
+                        <li>Em caso de desacato ou suspeita de fraude organizada, acione o agente da Polícia Federal de plantão no local.</li>
+                    </ol>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Compreendido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         FORMULÁRIO DE CONTATO & REGISTRO DE OCORRÊNCIAS
+    =========================================== -->
+    <section id="contato" class="py-5">
+        <div class="container py-4">
+            <div class="row gy-5">
+                <div class="col-lg-5">
+                    <span class="text-primary fw-bold text-uppercase tracking-wider small">Suporte Tático</span>
+                    <h2 class="fw-bold display-6 mb-3">Registro de Ocorrências e Chamados</h2>
+                    <p class="text-muted mb-4">
+                        Utilize este canal dinâmico para registrar ocorrências operacionais do local de prova e encaminhar o relatório sintético para a Coordenação Geral do INEP.
+                    </p>
+
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box icon-box-blue me-3 mb-0" style="width: 48px; height: 48px;">
+                            <i class="bi bi-telephone-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <span class="text-muted small d-block">Linha Direta Operacional</span>
+                            <strong>0800 616161 (Central INEP)</strong>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box icon-box-yellow me-3 mb-0" style="width: 48px; height: 48px;">
+                            <i class="bi bi-envelope-paper-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <span class="text-muted small d-block">E-mail de Suporte Tático</span>
+                            <strong>suporte.enem2026@inep.gov.br</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="card custom-card p-4 p-md-5">
+                        <h4 class="fw-bold mb-4">Formulário de Notificação em Tempo Real</h4>
+
+                        <!-- Alerta Dinâmico de Feedback -->
+                        <div id="formAlert" class="alert d-none" role="alert"></div>
+
+                        <form id="ocorrenciaForm" novalidate>
+                            <div class="row g-3">
+                                <!-- Campo 1: Nome -->
+                                <div class="col-md-6">
+                                    <label for="nomeAssistente" class="form-label fw-semibold">Nome do Assistente *</label>
+                                    <input type="text" class="form-control" id="nomeAssistente" placeholder="Seu nome completo" required>
+                                    <div class="invalid-feedback">Por favor, informe seu nome completo.</div>
+                                </div>
+
+                                <!-- Campo 2: E-mail -->
+                                <div class="col-md-6">
+                                    <label for="emailAssistente" class="form-label fw-semibold">E-mail Institucional *</label>
+                                    <input type="email" class="form-control" id="emailAssistente" placeholder="nome@exemplo.com" required>
+                                    <div class="invalid-feedback">Informe um endereço de e-mail válido.</div>
+                                </div>
+
+                                <!-- Campo 3: Local de Prova -->
+                                <div class="col-md-6">
+                                    <label for="localEscola" class="form-label fw-semibold">Escola / Local de Aplicação *</label>
+                                    <input type="text" class="form-control" id="localEscola" placeholder="Ex: E.E. Professor Silva - Bloco B" required>
+                                    <div class="invalid-feedback">Informe o local ou escola da ocorrência.</div>
+                                </div>
+
+                                <!-- Campo 4: Tipo de Ocorrência (Select) -->
+                                <div class="col-md-6">
+                                    <label for="tipoOcorrencia" class="form-label fw-semibold">Categoria da Ocorrência *</label>
+                                    <select class="form-select" id="tipoOcorrencia" required>
+                                        <option value="" selected disabled>Selecione uma categoria...</option>
+                                        <option value="Falta de Material / Provas">Falta de Material / Provas</option>
+                                        <option value="Ausência de Aplicador">Ausência de Aplicador / Fiscal</option>
+                                        <option value="Eliminação de Candidato">Eliminação de Candidato</option>
+                                        <option value="Problema Estrutural / Elétrico">Problema Estrutural / Elétrico</option>
+                                        <option value="Outros">Outros Chamados</option>
+                                    </select>
+                                    <div class="invalid-feedback">Selecione o tipo de ocorrência.</div>
+                                </div>
+
+                                <!-- Campo 5: Mensagem / Detalhes -->
+                                <div class="col-12">
+                                    <label for="mensagemOcorrencia" class="form-label fw-semibold">Descrição Detalhada da Ocorrência *</label>
+                                    <textarea class="form-control" id="mensagemOcorrencia" rows="4" placeholder="Descreva com detalhes o fato, número da sala e providências iniciais adotadas..." required></textarea>
+                                    <div class="invalid-feedback">Descreva os detalhes da ocorrência (mínimo 10 caracteres).</div>
+                                </div>
+
+                                <div class="col-12 mt-4">
+                                    <button type="submit" class="btn btn-warning fw-bold text-dark w-100 py-3 shadow-sm" id="btnSubmitForm">
+                                        <span class="spinner-border spinner-border-sm d-none me-2" id="btnSpinner" role="status" aria-hidden="true"></span>
+                                        <i class="bi bi-send-fill me-2" id="btnIcon"></i> Transmitir Registro de Ocorrência
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         RODAPÉ (FOOTER)
+    =========================================== -->
+    <footer class="pt-5 pb-4">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-5">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-shield-check text-warning fs-3 me-2"></i>
+                        <span class="fw-bold fs-5 text-white">ENEM<span class="text-warning">Pro</span> - Central do Assistente</span>
+                    </div>
+                    <p class="small opacity-75 pe-lg-4">
+                        Sistema independente desenvolvido como projeto final para otimização do fluxo operacional de assistentes de coordenação do Exame Nacional do Ensino Médio.
+                    </p>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <h6 class="fw-bold text-white mb-3 text-uppercase small tracking-wider">Links Rápidos</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="#atribuicoes">Atribuições</a></li>
+                        <li class="mb-2"><a href="#recursos">Guia de Diretrizes</a></li>
+                        <li class="mb-2"><a href="#checklist">Checklist da Operação</a></li>
+                        <li class="mb-2"><a href="#calculadora">Calculadora de Insumos</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-6 col-lg-4">
+                    <h6 class="fw-bold text-white mb-3 text-uppercase small tracking-wider">Sistemas Oficiais INEP</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="https://enem.inep.gov.br/" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1"></i> Portal do Participante</a></li>
+                        <li class="mb-2"><a href="https://www.gov.br/inep/" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1"></i> Portal Oficial do INEP</a></li>
+                        <li class="mb-2"><a href="#" id="linkLimparDados"><i class="bi bi-trash me-1"></i> Limpar Dados Salvos no Navegador</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="border-secondary opacity-25 my-4">
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small opacity-75">
+                <p class="mb-2 mb-md-0">&copy; 2026 Painel ENEM Pro. Projeto de Unidade Curricular de Front-end.</p>
+                <div class="d-flex gap-3 fs-5">
+                    <a href="#" aria-label="Github"><i class="bi bi-github"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                    <a href="#" aria-label="Globe"><i class="bi bi-globe"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botão Flutuante de Atalho para Emergências -->
+    <a href="#protocolos" class="btn btn-danger rounded-circle p-3 floating-action-btn d-flex align-items-center justify-content-center" title="Acessar Protocolos de Emergência" style="width: 55px; height: 55px;">
+        <i class="bi bi-telephone-outbound-fill fs-4"></i>
+    </a>
+
+    <!-- Bootstrap 5.3 JS Bundle (com Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- LÓGICA JAVASCRIPT PERSONALIZADA (ES6+) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            /* ========================================================
+               1. RECURSO JS: MODO ESCURO / CLARO (DARK MODE TOGGLE)
+            ======================================================== */
+            const themeToggleBtn = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const htmlElement = document.documentElement;
+
+            // Carrega tema preferido do localStorage se existir
+            const savedTheme = localStorage.getItem('enemPro_theme') || 'light';
+            setTheme(savedTheme);
+
+            themeToggleBtn.addEventListener('click', () => {
+                const currentTheme = htmlElement.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                setTheme(newTheme);
+            });
+
+            function setTheme(theme) {
+                htmlElement.setAttribute('data-bs-theme', theme);
+                localStorage.setItem('enemPro_theme', theme);
+
+                if (theme === 'dark') {
+                    themeIcon.className = 'bi bi-sun-fill text-warning';
+                } else {
+                    themeIcon.className = 'bi bi-moon-stars-fill';
+                }
+            }
+
+            /* ========================================================
+               2. RECURSO JS: CONTADORES NUMÉRICOS ANIMADOS DA HERO
+            ======================================================== */
+            const counters = document.querySelectorAll('.counter');
+            let animated = false;
+
+            function animateCounters() {
+                counters.forEach(counter => {
+                    const target = +counter.getAttribute('data-target');
+                    const speed = 200; // menor = mais rápido
+                    const increment = Math.ceil(target / speed) || 1;
+
+                    let count = 0;
+                    const updateCounter = () => {
+                        count += increment;
+                        if (count < target) {
+                            counter.innerText = count;
+                            setTimeout(updateCounter, 20);
+                        } else {
+                            counter.innerText = target;
+                        }
+                    };
+                    updateCounter();
+                });
+            }
+
+            // Inicia animação ao carregar
+            setTimeout(animateCounters, 300);
+
+            /* ========================================================
+               3. RECURSO JS: CHECKLIST DINÂMICO DE OPERAÇÃO
+            ======================================================== */
+            const defaultChecklistData = [
+                { id: 1, text: "Receber os malotes lacrados das mãos da Polícia Militar/Consórcio", status: "pending", category: "manha" },
+                { id: 2, text: "Verificar a presença de todos os Fiscais de Sala e Fiscais Reservas", status: "pending", category: "manha" },
+                { id: 3, text: "Distribuir crachás, envelopes porta-objetos e canetas reservas", status: "pending", category: "manha" },
+                { id: 4, text: "Autorizar abertura dos portões pontualmente às 12:00h", status: "pending", category: "manha" },
+                { id: 5, text: "Fechar os portões pontualmente às 13:00h (sem exceções)", status: "pending", category: "tarde" },
+                { id: 6, text: "Autorizar distribuição dos cadernos de provas às 13:30h", status: "pending", category: "tarde" },
+                { id: 7, text: "Iniciar rondas periódicas de segurança nos banheiros com detector de metais", status: "pending", category: "tarde" },
+                { id: 8, text: "Conferir atas de sala e recolher malotes de provas ao término", status: "pending", category: "tarde" }
+            ];
+
+            // Carrega checklist do localStorage ou usa o padrão
+            let checklistItems = JSON.parse(localStorage.getItem('enemPro_checklist')) || defaultChecklistData;
+
+            const checklistContainer = document.getElementById('checklistContainer');
+            const progressPercentage = document.getElementById('progressPercentage');
+            const checklistProgressBar = document.getElementById('checklistProgressBar');
+
+            function renderChecklist(filter = 'all') {
+                checklistContainer.innerHTML = '';
+
+                const filteredItems = checklistItems.filter(item => {
+                    if (filter === 'pending') return item.status === 'pending';
+                    if (filter === 'done') return item.status === 'completed';
+                    return true;
+                });
+
+                if (filteredItems.length === 0) {
+                    checklistContainer.innerHTML = `
+                        <div class="col-12 text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                            Nenhum item encontrado nesta categoria.
+                        </div>
+                    `;
+                } else {
+                    filteredItems.forEach(item => {
+                        const isChecked = item.status === 'completed';
+                        const col = document.createElement('div');
+                        col.className = 'col-md-6';
+                        col.innerHTML = `
+                            <div class="card custom-card p-3 checklist-item ${isChecked ? 'completed' : ''}">
+                                <div class="form-check d-flex align-items-center mb-0">
+                                    <input class="form-check-input me-3 checklist-checkbox" type="checkbox" data-id="${item.id}" id="chk_${item.id}" ${isChecked ? 'checked' : ''} style="transform: scale(1.2); cursor: pointer;">
+                                    <label class="form-check-label flex-grow-1 cursor-pointer" for="chk_${item.id}">
+                                        ${item.text}
+                                    </label>
+                                </div>
+                            </div>
+                        `;
+                        checklistContainer.appendChild(col);
+                    });
+                }
+
+                updateChecklistProgress();
+                attachChecklistEvents();
+            }
+
+            function attachChecklistEvents() {
+                document.querySelectorAll('.checklist-checkbox').forEach(chk => {
+                    chk.addEventListener('change', (e) => {
+                        const id = parseInt(e.target.getAttribute('data-id'));
+                        const item = checklistItems.find(i => i.id === id);
+                        if (item) {
+                            item.status = e.target.checked ? 'completed' : 'pending';
+                            localStorage.setItem('enemPro_checklist', JSON.stringify(checklistItems));
+                            renderChecklist(currentFilter);
+                        }
+                    });
+                });
+            }
+
+            function updateChecklistProgress() {
+                const total = checklistItems.length;
+                const completed = checklistItems.filter(i => i.status === 'completed').length;
+                const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+                progressPercentage.innerText = `${percent}%`;
+                checklistProgressBar.style.width = `${percent}%`;
+                checklistProgressBar.setAttribute('aria-valuenow', percent);
+            }
+
+            // Filtros do Checklist
+            let currentFilter = 'all';
+            document.getElementById('btnFilterAll').addEventListener('click', () => { currentFilter = 'all'; renderChecklist('all'); });
+            document.getElementById('btnFilterPending').addEventListener('click', () => { currentFilter = 'pending'; renderChecklist('pending'); });
+            document.getElementById('btnFilterDone').addEventListener('click', () => { currentFilter = 'done'; renderChecklist('done'); });
+            
+            document.getElementById('btnResetChecklist').addEventListener('click', () => {
+                if (confirm("Deseja restaurar o checklist para o estado inicial?")) {
+                    checklistItems = JSON.parse(JSON.stringify(defaultChecklistData));
+                    localStorage.setItem('enemPro_checklist', JSON.stringify(checklistItems));
+                    renderChecklist('all');
+                }
+            });
+
+            renderChecklist();
+
+            /* ========================================================
+               4. RECURSO JS: CALCULADORA LOGÍSTICA DE INSUMOS
+            ======================================================== */
+            const btnCalcular = document.getElementById('btnCalcular');
+
+            function calcularLogistica() {
+                const numSalas = parseInt(document.getElementById('inputSalas').value) || 0;
+                const mediaAlunos = parseInt(document.getElementById('inputMediaAlunos').value) || 0;
+
+                if (numSalas <= 0 || mediaAlunos <= 0) {
+                    alert('Por favor, insira valores válidos para o cálculo.');
+                    return;
+                }
+
+                const totalAlunos = numSalas * mediaAlunos;
+
+                // Fórmulas recomendadas
+                const garrafasAgua = Math.ceil(totalAlunos * 1.5) + (numSalas * 2); // 1.5 por aluno + fiscais
+                const fiscaisCorredor = Math.ceil(numSalas / 5) + 2; // 1 fiscal para cada 5 salas + reserva
+                const envelopesObjetos = Math.ceil(totalAlunos * 1.1); // 10% de margem de sobra
+                const canetasReserva = Math.ceil(totalAlunos * 0.15); // 15% dos candidatos pedem caneta extra
+
+                // Atualizar DOM
+                document.getElementById('resAgua').innerText = `${garrafasAgua} un.`;
+                document.getElementById('resFiscais').innerText = `${fiscaisCorredor} prof.`;
+                document.getElementById('resEnvelopes').innerText = `${envelopesObjetos} un.`;
+                document.getElementById('resCanetas').innerText = `${canetasReserva} un.`;
+            }
+
+            btnCalcular.addEventListener('click', calcularLogistica);
+            // Executa cálculo inicial padrão
+            calcularLogistica();
+
+            /* ========================================================
+               5. RECURSO JS: VALIDAÇÃO DINÂMICA DE FORMULÁRIO E ENVIO SIMULADO
+            ======================================================== */
+            const ocorrenciaForm = document.getElementById('ocorrenciaForm');
+            const formAlert = document.getElementById('formAlert');
+            const btnSubmit = document.getElementById('btnSubmitForm');
+            const btnSpinner = document.getElementById('btnSpinner');
+            const btnIcon = document.getElementById('btnIcon');
+
+            ocorrenciaForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const nome = document.getElementById('nomeAssistente');
+                const email = document.getElementById('emailAssistente');
+                const local = document.getElementById('localEscola');
+                const tipo = document.getElementById('tipoOcorrencia');
+                const msg = document.getElementById('mensagemOcorrencia');
+
+                // Validação customizada dos campos
+                let isValid = true;
+
+                // Validar E-mail Regex
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email.value)) {
+                    email.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    email.classList.remove('is-invalid');
+                    email.classList.add('is-valid');
+                }
+
+                // Validar Campos de Texto
+                [nome, local, tipo].forEach(input => {
+                    if (!input.value.trim()) {
+                        input.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        input.classList.remove('is-invalid');
+                        input.classList.add('is-valid');
+                    }
+                });
+
+                if (msg.value.trim().length < 10) {
+                    msg.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    msg.classList.remove('is-invalid');
+                    msg.classList.add('is-valid');
+                }
+
+                ocorrenciaForm.classList.add('was-validated');
+
+                if (isValid) {
+                    // Estado de Carregamento (Simulação de Envio EmailJS/Formspree)
+                    btnSubmit.disabled = true;
+                    btnSpinner.classList.remove('d-none');
+                    btnIcon.classList.add('d-none');
+
+                    setTimeout(() => {
+                        // Ocultar Spinner
+                        btnSubmit.disabled = false;
+                        btnSpinner.classList.add('d-none');
+                        btnIcon.classList.remove('d-none');
+
+                        // Mostrar Mensagem de Sucesso
+                        formAlert.className = "alert alert-success d-block border-0 shadow-sm";
+                        formAlert.innerHTML = `
+                            <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                            <strong>Ocorrência transmitida com sucesso!</strong> Protocolo nº <strong>#ENEM-${Math.floor(100000 + Math.random() * 900000)}</strong> gerado e enviado para a coordenação geral.
+                        `;
+
+                        // Resetar formulário
+                        ocorrenciaForm.reset();
+                        ocorrenciaForm.classList.remove('was-validated');
+                        document.querySelectorAll('.is-valid').forEach(el => el.classList.remove('is-valid'));
+
+                        // Auto ocultar alerta após 6 segundos
+                        setTimeout(() => {
+                            formAlert.classList.add('d-none');
+                        }, 6000);
+
+                    }, 1800); // Simula 1.8 segundos de rede
+                } else {
+                    formAlert.className = "alert alert-danger d-block border-0 shadow-sm";
+                    formAlert.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-2"></i> Por favor, preencha corretamente todos os campos destacados.`;
+                }
+            });
+
+            /* Limpar dados salvos no localStorage via footer */
+            document.getElementById('linkLimparDados').addEventListener('click', (e) => {
+                e.preventDefault();
+                if (confirm("Deseja limpar as preferências de tema e checklist salvas no navegador?")) {
+                    localStorage.removeItem('enemPro_theme');
+                    localStorage.removeItem('enemPro_checklist');
+                    location.reload();
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
